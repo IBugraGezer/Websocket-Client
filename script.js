@@ -38,7 +38,7 @@ sendButton.onclick = (event) => {
   if (!window.ws.readyState) return false;
   data = messageInput.value;
   window.ws.send(data);
-  createMessage("clientMessage", data);
+  createMessage("clientMessage", "<b>You: </b>" + data);
   setTimeout(
     () => (messageContainer.scrollTop = messageContainer.scrollHeight),
     100
@@ -54,7 +54,7 @@ clearButton.onclick = (event) => {
 createMessage = (type, content) => {
   let element = document.createElement("div");
   element.className = type + " message";
-  element.innerText = content;
+  element.innerHTML = content;
   if (type != "infoMessage") element.innerHTML += "<hr class='divider'>";
   messageContainer.appendChild(element);
   showMessageWithFadeAnimation(element);
