@@ -14,7 +14,7 @@ connectButton.onclick = (event) => {
   }
 };
 
-createWs = (token) => {
+createWs = (url) => {
   window.ws = new WebSocket(url);
 
   window.ws.onopen = (event) => {
