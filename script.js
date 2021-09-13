@@ -5,6 +5,12 @@ var sendButton = document.getElementById("sendButton");
 var clearButton = document.getElementById("clearButton");
 var messageContainer = document.getElementsByClassName("messageContainer")[0];
 
+const messageTypes = {
+  SERVER_MESSAGE: "serverMessage",
+  INFO_MESSAGE: "infoMessage",
+  CLIENT_MESSAGE: "clientMessage"
+}
+
 connectButton.onclick = (event) => {
   if (typeof window.ws !== "undefined" && window.ws.readyState == 1)
     window.ws.close();
@@ -18,19 +24,19 @@ createWs = (url) => {
   window.ws = new WebSocket(url);
 
   window.ws.onopen = (event) => {
-    createMessage("infoMessage", "Connected");
+    createMessage(messageTypes.INFO_MESSAGE, "Connected");
     connectButton.innerText = "Disconnect";
     sendButton.disabled = false;
   };
 
   window.ws.onmessage = (event) => {
-    createMessage("serverMessage", event.data);
+    createMessage(messageTypes.SERVER_MESSAGE, event.data);
   };
 
   window.ws.onclose = () => {
     connectButton.innerText = "Connect";
     sendButton.disabled = true;
-    createMessage("infoMessage", "Connection Closed");
+    createMessage(messageTypes.INFO_MESSAGE, "Connection Closed");
   };
 };
 
@@ -38,7 +44,7 @@ sendButton.onclick = (event) => {
   if (!window.ws.readyState) return false;
   data = messageInput.value;
   window.ws.send(data);
-  createMessage("clientMessage", "<b>You: </b>" + data);
+  createMessage(messageTypes.CLIENT_MESSAGE, "<b>You: </b>" + data);
   setTimeout(
     () => (messageContainer.scrollTop = messageContainer.scrollHeight),
     100
@@ -55,7 +61,7 @@ createMessage = (type, content) => {
   let element = document.createElement("div");
   element.className = type + " message";
   element.innerHTML = content;
-  if (type != "infoMessage") element.innerHTML += "<hr class='divider'>";
+  if (type != messageTypes.INFO_MESSAGE) element.innerHTML += "<hr class='divider'>";
   messageContainer.appendChild(element);
   showMessageWithFadeAnimation(element);
 };
